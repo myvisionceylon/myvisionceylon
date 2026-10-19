@@ -1,0 +1,40 @@
+---
+import { render } from 'astro:content';
+import Idea from '../../layouts/Idea.astro';
+import { getVisions } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const visions = await getVisions();
+  return visions.map((entry) => ({ params: { id: entry.id }, props: { entry, all: visions } }));
+}
+
+const { entry, all } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+
+// "related": the two nearest other visions on the map
+const dist = (a: typeof d, b: typeof d) => Math.hypot(a.lat - b.lat, a.lng - b.lng);
+const related = all
+  .filter((e) => e.id !== entry.id)
+  .sort((a, b) => dist(d, a.data) - dist(d, b.data))
+  .slice(0, 2)
+  .map((e) => ({ title: e.data.title, href: `/visions/${e.id}/`, kind: e.data.kind }));
+---
+
+<Idea
+  title={d.title}
+  summary={d.summary}
+  file={`visions/${entry.id}.md`}
+  kind={d.kind}
+  location={d.location}
+  lat={d.lat}
+  lng={d.lng}
+  status={d.status}
+  horizon={d.horizon}
+  written={d.written}
+  updated={d.updated}
+  draft={d.draft}
+  related={related}
+>
+  <Content />
+</Idea>

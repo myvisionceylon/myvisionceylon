@@ -1,0 +1,173 @@
+---
+// Shared page layout for one vision (yours or a community one).
+import Base from './Base.astro';
+import LankaMap from '../components/LankaMap.astro';
+import { KINDS, SITE, type Kind } from '../site.config';
+import { isoDate } from '../lib/content';
+
+interface Props {
+  title: string;
+  summary: string;
+  file: string; // e.g. visions/rocket-launch-station.md
+  kind: Kind;
+  ideaKind?: Kind; // for community ideas
+  location: string;
+  lat: number;
+  lng: number;
+  status?: string;
+  horizon?: string;
+  written: Date;
+  updated?: Date;
+  draft?: boolean;
+  credit?: { by: string; via: string };
+  related?: { title: string; href: string; kind: Kind }[];
+}
+
+const p = Astro.props;
+const k = KINDS[p.kind];
+const sub = p.ideaKind ? KINDS[p.ideaKind] : null;
+const historyUrl = `${SITE.repo}/commits/main/src/content/${p.file}`;
+const sourceUrl = `${SITE.repo}/blob/main/src/content/${p.file}`;
+---
+
+<Base title={p.title} description={p.summary} path={p.kind === 'community' ? '~/community' : '~/visions'} nav="visions">
+  <a class="back" href="/#map">&lt;- cd ../map</a>
+  <div class="prompt" style="margin-top: 24px">$ cat {p.file}</div>
+  <h1 class="title">
+    {p.title}<span class="cursor" style={`color: ${k.color}`}>_</span>
+  </h1>
+  <p class="lede">{p.summary}</p>
+  {
+    p.draft && (
+      <p class="draft-note">
+        [DRAFT] only visible on your computer while running <code>npm run dev</code>
+      </p>
+    )
+  }
+
+  <div class="layout-2col">
+    <article class="primary prose">
+      <slot />
+    </article>
+
+    <aside class="secondary" aria-label="Details">
+      {
+        p.credit && (
+          <div class="credit">
+            <div class="credit-head">● COMMUNITY VISION</div>
+            <dl class="meta-grid" style="padding: 10px 0 0">
+              <dt>idea by</dt>
+              <dd style="color: var(--community)">{p.credit.by}</dd>
+              <dt>submitted</dt>
+              <dd>
+                {isoDate(p.written)} via {p.credit.via}
+              </dd>
+              <dt>curated by</dt>
+              <dd>{SITE.author}</dd>
+            </dl>
+          </div>
+        )
+      }
+
+      <div class="panel">
+        <div class="panel-head">[ meta ]</div>
+        <dl class="meta-grid">
+          <dt>type</dt>
+          <dd style={`color: ${k.color}`}>
+            {k.glyph} {k.label}
+          </dd>
+          {
+            sub && (
+              <>
+                <dt>kind</dt>
+                <dd style={`color: ${sub.color}`}>
+                  {sub.glyph} {sub.label}
+                </dd>
+              </>
+            )
+          }
+          {
+            p.status && (
+              <>
+                <dt>status</dt>
+                <dd>{p.status}</dd>
+              </>
+            )
+          }
+          <dt>location</dt>
+          <dd>{p.location}</dd>
+          <dt>coords</dt>
+          <dd>{p.lat.toFixed(2)}°N {p.lng.toFixed(2)}°E</dd>
+          {
+            p.horizon && (
+              <>
+                <dt>horizon</dt>
+                <dd>{p.horizon}</dd>
+              </>
+            )
+          }
+          <dt>written</dt>
+          <dd>{isoDate(p.written)}</dd>
+          {
+            p.updated && (
+              <>
+                <dt>updated</dt>
+                <dd>{isoDate(p.updated)}</dd>
+              </>
+            )
+          }
+        </dl>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">[ location ]</div>
+        <div style="padding: 12px">
+          <LankaMap mark={{ lat: p.lat, lng: p.lng, color: k.color, label: `Map of Sri Lanka marking ${p.location}` }} />
+        </div>
+      </div>
+
+      {
+        p.related && p.related.length > 0 && (
+          <div class="dashed" style="font-size: 13px">
+            <div class="prompt" style="font-size: 13px">related</div>
+            {p.related.map((r) => (
+              <a class="related" href={r.href} style={`color: ${KINDS[r.kind].color}`}>
+                {KINDS[r.kind].glyph} {r.title}
+              </a>
+            ))}
+          </div>
+        )
+      }
+
+      <div class="dashed" style="font-size: 13px">
+        <div class="prompt" style="font-size: 13px">proof of authorship</div>
+        <a class="related" href={historyUrl}>&gt; view edit history on github</a>
+        <a class="related" href={sourceUrl}>&gt; view source markdown</a>
+      </div>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .draft-note {
+    margin: 12px 0 0;
+    color: var(--futuristic);
+    font-size: 13px;
+  }
+  .credit {
+    border: 1px solid var(--community);
+    background: var(--community-bg);
+    padding: 12px 14px;
+  }
+  .credit-head {
+    color: var(--community);
+    font-size: 13px;
+  }
+  .credit .meta-grid {
+    grid-template-columns: 96px 1fr;
+  }
+  .related {
+    display: block;
+    padding: 6px 0;
+  }
+</style>

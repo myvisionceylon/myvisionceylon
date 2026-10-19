@@ -1,0 +1,89 @@
+---
+import '../styles/terminal.css';
+import { SITE } from '../site.config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** shown after the logo, like a shell path: ~/visions$ */
+  path?: string;
+  /** which nav item to mark as current */
+  nav?: 'map' | 'visions' | 'thoughts' | 'about' | 'submit';
+}
+
+const { title, description = SITE.description, path = '~', nav } = Astro.props;
+const pageTitle = title ? `${title} · ${SITE.name}` : SITE.title;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const year = new Date().getFullYear();
+const years = year > SITE.startYear ? `${SITE.startYear}–${year}` : `${SITE.startYear}`;
+
+const links = [
+  { key: 'map', href: '/#map', label: '[map]' },
+  { key: 'visions', href: '/#visions', label: '[visions]' },
+  { key: 'thoughts', href: '/thoughts/', label: '[thoughts]' },
+  { key: 'about', href: '/#about', label: '[about]' },
+] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
+    <meta name="theme-color" content="#0e1411" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="sr-only" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="logo" href="/">
+          <span class="name">{SITE.name}</span><span class="path">:{path}$</span>
+        </a>
+        <nav class="nav" aria-label="Main">
+          {
+            links.map((l) => (
+              <a href={l.href} aria-current={nav === l.key ? 'page' : undefined}>
+                {l.label}
+              </a>
+            ))
+          }
+          <a class="submit" href="/submit/" aria-current={nav === 'submit' ? 'page' : undefined}>[submit]</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="content" class="wrap">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>
+          © {years} {SITE.author} · text licensed <a href={SITE.licenseUrl}>{SITE.license}</a>
+        </span>
+        <span>
+          <a href={SITE.repo}>github</a> · <a href={SITE.blog}>blog</a> · <a href="/rss.xml">rss</a>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>

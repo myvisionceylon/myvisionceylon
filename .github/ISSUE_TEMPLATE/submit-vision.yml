@@ -1,0 +1,84 @@
+name: Submit a vision
+description: Share your vision for Sri Lanka. Good ideas get a page and a community pin on the map.
+title: "VISION: "
+labels: ["community vision"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! Write in your own words. Sinhala, Tamil or English are all fine.
+        You will be credited by the name you give below.
+  - type: input
+    id: title
+    attributes:
+      label: Vision name
+      placeholder: e.g. Jaffna Seawater Farms
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of idea is it?
+      options:
+        - practical
+        - futuristic
+        - fantasy
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Where in Sri Lanka?
+      description: A town or area is enough. Coordinates are a bonus.
+      placeholder: e.g. Point Pedro, Jaffna (9.82, 80.23)
+    validations:
+      required: true
+  - type: input
+    id: summary
+    attributes:
+      label: One-line summary
+      placeholder: Describe it in one sentence
+    validations:
+      required: true
+  - type: textarea
+    id: vision
+    attributes:
+      label: The vision
+      description: What is it? Paint the picture.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why this place?
+  - type: textarea
+    id: pros
+    attributes:
+      label: Pros
+      value: "- "
+  - type: textarea
+    id: cons
+    attributes:
+      label: Cons
+      value: "- "
+  - type: textarea
+    id: how
+    attributes:
+      label: How could it happen?
+      description: First steps, rough phases. Optional.
+  - type: input
+    id: credit
+    attributes:
+      label: Credit me as
+      description: Your name or a nickname, shown on the page.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Before you send
+      options:
+        - label: This is my own idea, not copied from someone else.
+          required: true
+        - label: I agree it can be published on myvisionceylon under CC BY-NC 4.0, with credit to me.
+          required: true

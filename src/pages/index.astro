@@ -1,0 +1,151 @@
+---
+import Base from '../layouts/Base.astro';
+import LankaMap from '../components/LankaMap.astro';
+import Legend from '../components/Legend.astro';
+import PinList from '../components/PinList.astro';
+import { SITE } from '../site.config';
+import { getVisions, getCommunity, getThoughts, visionPin, communityPin, isoDate } from '../lib/content';
+
+const visions = (await getVisions()).map(visionPin);
+const community = (await getCommunity()).map(communityPin);
+const thoughts = await getThoughts();
+const allPins = [...visions, ...community];
+const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
+---
+
+<Base nav="map">
+  <section aria-label="Intro">
+    <div class="prompt boot">
+      <div>&gt; booting {SITE.name} v0.1 ...</div>
+      <div>&gt; loading map of lanka ............ <span class="ok">ok</span></div>
+      <div>
+        &gt; {`${plural(visions.length, 'vision')}, ${plural(community.length, 'community vision')}, ${plural(thoughts.length, 'thought')} found`}
+      </div>
+    </div>
+    <h1 class="title" style="margin-top: 24px">
+      A notebook of visions for Sri Lanka<span class="cursor" style="color: var(--accent)">_</span>
+    </h1>
+    <p class="lede">
+      {`Some are practical. Some are futuristic. Some are pure fantasy. All of them are written down here, with dates, by ${SITE.author}.`}
+    </p>
+    <Legend />
+  </section>
+
+  <div class="home-grid">
+    <section id="map" class="panel map-panel" aria-label="Vision map">
+      <div class="panel-head">
+        <span>[ map.lk ]</span>
+        <span>hover a point · click to open</span>
+      </div>
+      <div class="map-pad">
+        <LankaMap pins={allPins} label="Outline map of Sri Lanka with vision locations" />
+      </div>
+    </section>
+
+    <div class="side">
+      <section id="visions" aria-label="Visions">
+        <div class="prompt">$ ls -l visions/</div>
+        <PinList pins={visions} empty="no visions yet" />
+      </section>
+
+      {
+        community.length > 0 && (
+          <section id="community" aria-label="Community visions">
+            <div class="prompt">$ ls -l community/</div>
+            <PinList pins={community} />
+          </section>
+        )
+      }
+
+      <section id="thoughts" aria-label="Personal thoughts">
+        <div class="prompt">$ ls -l thoughts/</div>
+        <div class="listing">
+          {thoughts.length === 0 && <div class="empty">-- no thoughts yet --</div>}
+          {
+            thoughts.slice(0, 5).map((t) => (
+              <a class="row" href={`/thoughts/${t.id}/`}>
+                <span class="date">{isoDate(t.data.written)}</span>
+                <span class="main">
+                  <span class="t">
+                    {t.data.title}
+                    {t.data.draft && <span class="draft-tag">DRAFT</span>}
+                  </span>
+                  {t.data.summary && <span class="s">{t.data.summary}</span>}
+                </span>
+              </a>
+            ))
+          }
+        </div>
+        {thoughts.length > 5 && <a class="more" href="/thoughts/">&gt; all thoughts</a>}
+      </section>
+
+      <section class="cta" aria-label="Submit a vision">
+        <div class="cta-prompt">● $ ./submit-vision.sh</div>
+        <p>Do you also have visions like this for Sri Lanka?</p>
+        <a class="btn community" href="/submit/">&gt; click to submit your vision</a>
+      </section>
+
+      <section id="about" class="dashed" aria-label="About">
+        <div class="prompt">$ cat about.txt</div>
+        <p style="margin: 8px 0 0">
+          I'm {SITE.author}, a Sri Lankan who thinks too much about what this island could become. These are my ideas,
+          written in my own words and dated in public on <a href={SITE.repo}>GitHub</a>. Take them, argue with them,
+          build on them. Just say where they came from.
+        </p>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .boot .ok {
+    color: var(--accent);
+  }
+  .home-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: flex-start;
+    margin-top: 40px;
+  }
+  .map-panel {
+    flex: 1 1 340px;
+    max-width: 480px;
+  }
+  .map-pad {
+    padding: 12px;
+  }
+  .side {
+    flex: 999 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .side .prompt {
+    margin-bottom: 8px;
+  }
+  .more {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  .cta {
+    border: 1px solid var(--community);
+    background: var(--community-bg);
+    padding: 16px 18px;
+  }
+  .cta-prompt {
+    color: var(--community);
+    font-size: 14px;
+  }
+  .cta p {
+    margin: 8px 0 12px;
+    color: var(--text-bright);
+  }
+  @media (max-width: 760px) {
+    .map-panel {
+      max-width: none;
+    }
+  }
+</style>

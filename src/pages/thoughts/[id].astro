@@ -1,0 +1,34 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { SITE } from '../../site.config';
+import { getThoughts, isoDate } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const thoughts = await getThoughts();
+  return thoughts.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const historyUrl = `${SITE.repo}/commits/main/src/content/thoughts/${entry.id}.md`;
+---
+
+<Base title={d.title} description={d.summary} path="~/thoughts" nav="thoughts">
+  <a class="back" href="/thoughts/">&lt;- cd ../thoughts</a>
+  <div class="prompt" style="margin-top: 24px">$ cat thoughts/{entry.id}.md</div>
+  <h1 class="title">{d.title}<span class="cursor" style="color: var(--accent)">_</span></h1>
+  <div class="prompt">
+    written {isoDate(d.written)} by {SITE.author}
+    {d.draft && <span class="draft-tag">DRAFT</span>}
+  </div>
+
+  <article class="prose" style="margin-top: 32px">
+    <Content />
+  </article>
+
+  <p class="prompt" style="margin-top: 40px">
+    <a href={historyUrl}>&gt; view edit history on github</a>
+  </p>
+</Base>

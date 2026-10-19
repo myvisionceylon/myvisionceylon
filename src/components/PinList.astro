@@ -1,0 +1,36 @@
+---
+// An `ls -l` style list of visions. Rows share data-pin ids with the map,
+// so hovering one highlights the other.
+import { KINDS } from '../site.config';
+import { isoDate, type Pin } from '../lib/content';
+
+interface Props {
+  pins: Pin[];
+  empty?: string;
+}
+const { pins, empty = 'nothing here yet' } = Astro.props;
+---
+
+<div class="listing">
+  {pins.length === 0 && <div class="empty">-- {empty} --</div>}
+  {
+    pins.map((p) => {
+      const k = KINDS[p.kind];
+      return (
+        <a class="row" href={p.href} data-pin={p.id}>
+          <span class="date">{isoDate(p.date)}</span>
+          <span class="kind" style={`color: ${k.color}`}>
+            {k.glyph} {k.label}
+          </span>
+          <span class="main">
+            <span class="t">
+              {p.title}
+              {p.draft && <span class="draft-tag">DRAFT</span>}
+            </span>
+            <span class="s">{p.place}</span>
+          </span>
+        </a>
+      );
+    })
+  }
+</div>

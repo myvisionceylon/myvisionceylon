@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getThoughts, isoDate } from '../../lib/content';
+
+const thoughts = await getThoughts();
+---
+
+<Base title="Thoughts" description="Personal visions: free writing about Sri Lanka and life." path="~/thoughts" nav="thoughts">
+  <a class="back" href="/">&lt;- cd ..</a>
+  <div class="prompt" style="margin-top: 24px">$ ls -l thoughts/</div>
+  <h1 class="title">Personal visions<span class="cursor" style="color: var(--accent)">_</span></h1>
+  <p class="lede">No map, no pros and cons. Just thinking out loud.</p>
+
+  <div class="listing" style="margin-top: 32px; max-width: 820px">
+    {thoughts.length === 0 && <div class="empty">-- no thoughts yet --</div>}
+    {
+      thoughts.map((t) => (
+        <a class="row" href={`/thoughts/${t.id}/`}>
+          <span class="date">{isoDate(t.data.written)}</span>
+          <span class="main">
+            <span class="t">
+              {t.data.title}
+              {t.data.draft && <span class="draft-tag">DRAFT</span>}
+            </span>
+            {t.data.summary && <span class="s">{t.data.summary}</span>}
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</Base>

@@ -1,0 +1,30 @@
+---
+import { render } from 'astro:content';
+import Idea from '../../layouts/Idea.astro';
+import { getCommunity } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const items = await getCommunity();
+  return items.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+---
+
+<Idea
+  title={d.title}
+  summary={d.summary}
+  file={`community/${entry.id}.md`}
+  kind="community"
+  ideaKind={d.idea_kind}
+  location={d.location}
+  lat={d.lat}
+  lng={d.lng}
+  written={d.written}
+  draft={d.draft}
+  credit={{ by: d.submitted_by, via: d.submitted_via }}
+>
+  <Content />
+</Idea>

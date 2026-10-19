@@ -1,0 +1,206 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site.config';
+import template from '../content/community/_template.md?raw';
+
+// The address is stored reversed and base64-encoded, so simple spam bots
+// scraping the page don't find it. It's decoded only when someone clicks.
+const scrambled = btoa(SITE.email.split('').reverse().join(''));
+const issueUrl = `${SITE.repo}/issues/new?template=submit-vision.yml`;
+const forkUrl = `${SITE.repo}/fork`;
+---
+
+<Base
+  title="Submit a vision"
+  description="Have a vision for Sri Lanka? Send it in by email, a GitHub issue, or a pull request."
+  path="~/submit"
+  nav="submit"
+>
+  <a class="back" href="/">&lt;- cd ../map</a>
+  <div class="prompt" style="margin-top: 24px">$ ./submit-vision.sh</div>
+  <h1 class="title">Got a vision for Sri Lanka?<span class="cursor" style="color: var(--community)">_</span></h1>
+  <p class="lede">
+    A harbour, a railway, a forest, a crazy floating city. Send it in. Good ideas get their own page and a{' '}
+    <span style="color: var(--community)">● COMMUNITY</span> pin on the map, with your name on it.
+  </p>
+
+  <section aria-label="Ways to submit" style="margin-top: 36px">
+    <div class="prompt" style="margin-bottom: 12px">$ choose a way to send it</div>
+    <div class="ways">
+      <div class="way way-email">
+        <div class="way-head" style="color: var(--community)">[1] email <span class="dim">· easiest</span></div>
+        <p>Just write it in your own words. Sinhala, Tamil or English, all welcome.</p>
+        <button class="btn community" type="button" id="reveal" data-x={scrambled}>&gt; click to reveal email</button>
+        <div class="revealed" id="revealed" hidden>
+          <div class="dim">decrypting ... <span style="color: var(--accent)">ok</span></div>
+          <a id="mail" href="#">…</a>
+          <div class="dim small">subject: VISION: your idea title</div>
+        </div>
+        <noscript><p class="dim small">Turn on JavaScript to see the address.</p></noscript>
+      </div>
+
+      <div class="way">
+        <div class="way-head">[2] github issue <span class="dim">· a simple form</span></div>
+        <p>Fill in the "Submit a vision" form on GitHub. Needs a free GitHub account, no coding.</p>
+        <a class="btn" href={issueUrl}>&gt; open the form</a>
+      </div>
+
+      <div class="way">
+        <div class="way-head">[3] pull request <span class="dim">· for git users</span></div>
+        <p>
+          <a href={forkUrl}>Fork the repo</a>, copy the template into <code>src/content/community/</code>, fill it in and
+          open a PR.
+        </p>
+        <a class="btn" href="#template">&gt; see the template</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout-2col" style="margin-top: 40px">
+    <section id="template" class="primary" aria-label="Vision template">
+      <div class="prompt" style="margin-bottom: 8px">$ cat src/content/community/_template.md</div>
+      <pre class="tpl">{template}</pre>
+      <p class="dim small" style="margin-top: 10px">
+        Don't know the coordinates? Just write the town name. I'll place the pin.
+      </p>
+    </section>
+
+    <aside class="secondary" aria-label="How community ideas appear">
+      <div>
+        <div class="prompt" style="margin-bottom: 8px">$ preview --community</div>
+        <div class="preview">
+          <div style="color: var(--community); font-size: 13px">● COMMUNITY · ▲ futuristic</div>
+          <div class="pv-title">Your vision's name</div>
+          <div class="dim small">Your town</div>
+          <dl class="meta-grid pv-meta">
+            <dt>idea by</dt>
+            <dd style="color: var(--community)">your name</dd>
+            <dt>submitted</dt>
+            <dd>date, via email</dd>
+            <dt>curated by</dt>
+            <dd>{SITE.author}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="dashed" style="font-size: 13px">
+        <div class="prompt" style="font-size: 13px; margin-bottom: 6px">$ cat RULES.txt</div>
+        <ol class="rules">
+          <li>send your own ideas, not someone else's</li>
+          <li>be kind: no attacks on people or groups</li>
+          <li>I may edit for length and clarity</li>
+          <li>not every idea gets published</li>
+          <li>you keep credit, always; ask any time to have it removed</li>
+          <li>published text uses the site's {SITE.license} license</li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .ways {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .way {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .way-email {
+    border-color: var(--community);
+    background: var(--community-bg);
+  }
+  .way p {
+    margin: 0;
+    font-size: 14px;
+  }
+  .way-head {
+    color: var(--accent);
+    font-size: 14px;
+  }
+  .way code {
+    color: var(--text-bright);
+  }
+  .dim {
+    color: var(--text-dim);
+  }
+  .small {
+    font-size: 12px;
+  }
+  .revealed {
+    padding: 10px 12px;
+    background: var(--bg-deep);
+    border: 1px dashed var(--community);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+  .revealed a {
+    color: var(--community);
+  }
+  .tpl {
+    margin: 0;
+    padding: 20px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    font-size: 13px;
+    line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .preview {
+    border: 1px solid var(--community);
+    background: var(--community-bg);
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+  .pv-title {
+    margin-top: 4px;
+    color: var(--text-bright);
+    font-size: 16px;
+  }
+  .pv-meta {
+    margin-top: 10px;
+    padding: 10px 0 0;
+    border-top: 1px dashed #3a3140;
+    grid-template-columns: 96px 1fr;
+  }
+  .rules {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: r;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .rules li {
+    counter-increment: r;
+  }
+  .rules li::before {
+    content: counter(r, decimal-leading-zero) '. ';
+    color: var(--text-dim);
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('reveal') as HTMLButtonElement | null;
+  const box = document.getElementById('revealed');
+  const mail = document.getElementById('mail') as HTMLAnchorElement | null;
+  btn?.addEventListener('click', () => {
+    const addr = atob(btn.dataset.x || '').split('').reverse().join('');
+    if (mail) {
+      mail.textContent = addr;
+      mail.href = `mailto:${addr}?subject=${encodeURIComponent('VISION: ')}`;
+    }
+    btn.hidden = true;
+    if (box) box.hidden = false;
+    mail?.focus();
+  });
+</script>

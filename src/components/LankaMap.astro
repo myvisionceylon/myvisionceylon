@@ -1,0 +1,226 @@
+---
+// The radar-style map of Sri Lanka.
+// Full mode: every pin with a hover/focus tooltip that links to its page.
+// Mini mode: one location marker for the side panel of a vision page.
+import { LANKA_PATH, VIEWBOX, GRID, project } from '../lib/lanka';
+import { KINDS } from '../site.config';
+import type { Pin } from '../lib/content';
+
+interface Props {
+  pins?: Pin[];
+  /** mini mode: just mark one spot */
+  mark?: { lat: number; lng: number; color?: string; label: string };
+  label?: string;
+}
+
+const { pins = [], mark, label = 'Outline map of Sri Lanka' } = Astro.props;
+const vb = `${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`;
+const m = mark ? project(mark.lat, mark.lng) : null;
+---
+
+<div class:list={['map', { mini: !!mark }]}>
+  <svg viewBox={vb} role="img" aria-label={mark ? mark.label : label}>
+    {
+      !mark && (
+        <g class="grid" aria-hidden="true">
+          {GRID.lats.map((g) => (
+            <>
+              <line x1={VIEWBOX.x} y1={g.y} x2={VIEWBOX.x + VIEWBOX.w} y2={g.y} />
+              <text x={VIEWBOX.x + 2} y={g.y - 3}>{g.label}</text>
+            </>
+          ))}
+          {GRID.lngs.map((g) => (
+            <>
+              <line x1={g.x} y1={VIEWBOX.y} x2={g.x} y2={VIEWBOX.y + VIEWBOX.h} />
+              <text x={g.x + 3} y={VIEWBOX.y + VIEWBOX.h - 6}>{g.label}</text>
+            </>
+          ))}
+        </g>
+      )
+    }
+    <path class="land" d={LANKA_PATH} />
+    {
+      m && (
+        <g style={`color: ${mark!.color ?? 'var(--accent)'}`} aria-hidden="true">
+          <circle class="ring" cx={m.x} cy={m.y} r="9" fill="none" stroke="currentColor" stroke-width="2" />
+          <circle cx={m.x} cy={m.y} r="5" fill="currentColor" />
+        </g>
+      )
+    }
+  </svg>
+
+  {
+    pins.map((p) => {
+      const k = KINDS[p.kind];
+      const sub = p.subKind ? KINDS[p.subKind] : null;
+      return (
+        <a
+          class:list={['pin', p.left > 55 ? 'tip-left' : 'tip-right']}
+          href={p.href}
+          data-pin={p.id}
+          style={`left:${p.left.toFixed(2)}%;top:${p.top.toFixed(2)}%;--c:${k.color}`}
+          aria-label={`${p.title}, ${k.label.toLowerCase()}, ${p.place}`}
+        >
+          <span class="ring" aria-hidden="true" />
+          <span class="glyph" aria-hidden="true">{k.glyph}</span>
+          <span class="tip" aria-hidden="true">
+            <span class="tip-title">{p.title}</span>
+            <span class="tip-meta">
+              [{k.label}
+              {sub ? ` · ${sub.label.toLowerCase()}` : ''}] · {p.place}
+            </span>
+            <span class="tip-sum">{p.summary}</span>
+            <span class="tip-go">&gt; click to open</span>
+          </span>
+        </a>
+      );
+    })
+  }
+</div>
+
+<style>
+  .map {
+    position: relative;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .mini svg {
+    max-width: 220px;
+    margin: 0 auto;
+  }
+  .grid line {
+    stroke: var(--grid);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+  }
+  .grid text {
+    fill: #5d7266;
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  .land {
+    fill: var(--land);
+    stroke: var(--accent);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+  }
+  .mini .land {
+    stroke-width: 2;
+  }
+  .ring {
+    animation: ping 2.4s ease-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes ping {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+    100% {
+      transform: scale(2.3);
+      opacity: 0;
+    }
+  }
+
+  .pin {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--c);
+    z-index: 10;
+  }
+  .pin .ring {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+  }
+  .glyph {
+    font-size: 15px;
+    line-height: 1;
+  }
+  .tip {
+    display: none;
+    position: absolute;
+    top: 2px;
+    width: 230px;
+    padding: 8px 10px;
+    background: var(--bg-deep);
+    border: 1px solid currentColor;
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: left;
+    pointer-events: none;
+  }
+  .tip-right .tip {
+    left: 40px;
+  }
+  .tip-left .tip {
+    right: 40px;
+  }
+  .tip > span {
+    display: block;
+  }
+  .tip-title {
+    color: var(--c);
+    font-weight: 600;
+  }
+  .tip-meta {
+    color: var(--text-dim);
+  }
+  .tip-sum {
+    margin-top: 4px;
+  }
+  .tip-go {
+    margin-top: 6px;
+    color: var(--c);
+  }
+  .pin:hover,
+  .pin:focus-visible,
+  .pin.is-active {
+    z-index: 20;
+    color: var(--c);
+  }
+  .pin:hover .tip,
+  .pin:focus-visible .tip,
+  .pin.is-active .tip {
+    display: block;
+  }
+  @media (max-width: 480px) {
+    .tip {
+      width: 180px;
+    }
+  }
+</style>
+
+<script>
+  // Hovering a row in a list lights up its pin, and the other way round.
+  const groups = new Map<string, HTMLElement[]>();
+  document.querySelectorAll<HTMLElement>('[data-pin]').forEach((el) => {
+    const id = el.dataset.pin!;
+    if (!groups.has(id)) groups.set(id, []);
+    groups.get(id)!.push(el);
+  });
+  groups.forEach((els) => {
+    if (els.length < 2) return;
+    const on = () => els.forEach((e) => e.classList.add('is-active'));
+    const off = () => els.forEach((e) => e.classList.remove('is-active'));
+    els.forEach((e) => {
+      e.addEventListener('mouseenter', on);
+      e.addEventListener('mouseleave', off);
+      e.addEventListener('focus', on);
+      e.addEventListener('blur', off);
+    });
+  });
+</script>

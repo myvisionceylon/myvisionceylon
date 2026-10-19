@@ -1,0 +1,13 @@
+---
+import { KINDS } from '../site.config';
+---
+
+<div class="legend" aria-label="Marker types">
+  {
+    Object.values(KINDS).map((k) => (
+      <span style={`color: ${k.color}`}>
+        {k.glyph} {k.label}
+      </span>
+    ))
+  }
+</div>
