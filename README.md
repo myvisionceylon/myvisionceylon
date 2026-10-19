@@ -32,7 +32,8 @@ Other places you might touch:
 
 | file | what it is |
 | --- | --- |
-| `src/site.config.ts` | your name, email, links, license. **Fill in `author` first.** |
+| `src/site.config.ts` | your name, email, LinkedIn and other links, license |
+| `src/pages/about.md` | your About page. Plain Markdown; hints are in the `<!-- -->` comment at the top |
 | `src/styles/terminal.css` | colors and fonts (all colors are at the top) |
 | `astro.config.mjs` | the site address; change it when you buy the domain |
 

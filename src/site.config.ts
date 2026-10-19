@@ -8,6 +8,9 @@ export const SITE = {
     'Visions for Sri Lanka: some practical, some futuristic, some pure fantasy. Written down, dated, and open for anyone to build on.',
   author: 'Charuka Panapitiya',
   email: 'myvisionceylon@proton.me',
+  // Your LinkedIn profile, e.g. 'https://www.linkedin.com/in/your-name/'.
+  // Leave it as '' to hide the link.
+  linkedin: '',
   github: 'https://github.com/myvisionceylon',
   repo: 'https://github.com/myvisionceylon/myvisionceylon',
   blog: 'https://imaginatiodec.blogspot.com',
