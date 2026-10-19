@@ -3,14 +3,14 @@
 
 export const SITE = {
   name: 'myvisionceylon',
-  title: 'MyVisionCeylon: a notebook of visions for Sri Lanka',
+  title: "MyVisionCeylon: a terminal for imagining Sri Lanka's future",
   description:
     'Visions for Sri Lanka: some practical, some futuristic, some pure fantasy. Written down, dated, and open for anyone to build on.',
   author: 'Charuka Panapitiya',
   email: 'myvisionceylon@proton.me',
   // Your LinkedIn profile, e.g. 'https://www.linkedin.com/in/your-name/'.
   // Leave it as '' to hide the link.
-  linkedin: '',
+  linkedin: 'https://www.linkedin.com/in/charukarp/',
   github: 'https://github.com/myvisionceylon',
   repo: 'https://github.com/myvisionceylon/myvisionceylon',
   blog: 'https://imaginatiodec.blogspot.com',

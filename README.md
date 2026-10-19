@@ -2,7 +2,7 @@
 
 ```
 > booting myvisionceylon ...
-> a notebook of visions for Sri Lanka
+> a terminal for imagining Sri Lanka's future
 > practical ■   futuristic ▲   fantasy ◆   community ●
 ```
 

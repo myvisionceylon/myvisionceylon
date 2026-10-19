@@ -25,7 +25,9 @@ Some of my ideas are practical. Some are futuristic. Some are pure fantasy. For 
 
 ## about me
 
-[A few lines about yourself: your work, your background, what you're curious about.]
+> Driven by curiosity, guided by purpose, and inspired to make a positive difference through what I build.
+
+My work and background are on [LinkedIn](https://www.linkedin.com/in/charukarp/).
 
 ## say hello
 
