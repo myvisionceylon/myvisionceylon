@@ -7,7 +7,7 @@ This repository has two parts with two licenses.
 Everything in `src/content/` (visions, thoughts, community visions, ASCII drawings)
 is licensed under **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
 
-- Copyright © 2026 [YOUR NAME], except community visions, which remain © their named authors.
+- Copyright © 2026 Charuka Panapitiya, except community visions, which remain © their named authors.
 - You may share and adapt it, as long as you **give credit** (name the author and link to
   myvisionceylon) and **don't use it commercially**.
 - Full text: https://creativecommons.org/licenses/by-nc/4.0/legalcode
@@ -16,7 +16,7 @@ is licensed under **Creative Commons Attribution-NonCommercial 4.0 International
 
 Everything else (layouts, components, styles, scripts) is licensed under the **MIT License**.
 
-Copyright © 2026 [YOUR NAME]
+Copyright © 2026 Charuka Panapitiya
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 and associated documentation files (the "Software"), to deal in the Software without restriction,

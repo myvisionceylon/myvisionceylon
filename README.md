@@ -9,7 +9,7 @@
 Ideas for Sri Lanka, written down, dated, and public. Some are practical, some
 futuristic, some pure fantasy. Each one sits on a map of the island.
 
-Live site: https://myvisionceylon.pages.dev
+Live site: https://myvisionceylon.charukarp.workers.dev
 Have an idea of your own? See [Submitting a vision](#submitting-a-vision).
 
 ---
@@ -85,7 +85,7 @@ One-time setup:
    - Framework preset: **Astro**
    - Build command: `npm run build`
    - Build output directory: `dist`
-4. Save and deploy. You get `https://<project-name>.pages.dev`.
+4. Save and deploy. You get `https://<project-name>.<account>.workers.dev` (Workers) or `.pages.dev` (Pages).
 
 After that, every push to `main` publishes automatically.
 
@@ -115,7 +115,7 @@ source for search engines.
 
 Anyone can suggest an idea. Three ways:
 
-1. **Email:** the address is on the [submit page](https://myvisionceylon.pages.dev/submit/).
+1. **Email:** the address is on the [submit page](https://myvisionceylon.charukarp.workers.dev/submit/).
 2. **GitHub issue:** use the [Submit a vision form](../../issues/new?template=submit-vision.yml).
 3. **Pull request:** fork this repo, copy `src/content/community/_template.md` to a new file
    in the same folder, fill it in, and open a pull request.

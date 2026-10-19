@@ -6,7 +6,7 @@ export const SITE = {
   title: 'MyVisionCeylon: a notebook of visions for Sri Lanka',
   description:
     'Visions for Sri Lanka: some practical, some futuristic, some pure fantasy. Written down, dated, and open for anyone to build on.',
-  author: 'Charuka Panapitya',
+  author: 'Charuka Panapitiya',
   email: 'myvisionceylon@proton.me',
   github: 'https://github.com/myvisionceylon',
   repo: 'https://github.com/myvisionceylon/myvisionceylon',
