@@ -8,7 +8,7 @@ summary: A small-satellite launch site on the south coast, firing south-east ove
 status: idea
 horizon: "[e.g. 2040]"
 written: 2026-10-19
-draft: false
+draft: true
 ---
 
 ```
